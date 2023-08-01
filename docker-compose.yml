@@ -1,0 +1,90 @@
+version: '3'
+
+services:
+  proxy:
+    image: nginxproxy/nginx-proxy:alpine
+    restart: always
+    ports:
+      - ${HTTP_PORT}:80
+      - ${HTTPS_PORT}:443
+    volumes:
+      - ./proxy/conf.d:/etc/nginx/conf.d
+      - vhost.d:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - certs:/etc/nginx/certs:ro
+    environment:
+      - TZ=Asia/Tokyo
+    networks:
+      - proxy-tier
+
+  db:
+    image: mariadb:10.5
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    restart: always
+    volumes:
+      - db:/var/lib/mysql
+    env_file:
+      - db.env
+
+  redis:
+    image: redis:alpine
+    restart: always
+
+  app:
+    build: ./nextcloud
+    restart: always
+    volumes:
+      - ${DATA_DIR}:/var/www/html
+    environment:
+      - NEXTCLOUD_TRUSTED_DOMAINS=${DOMAIN}
+      - VIRTUAL_HOST=${DOMAIN}
+      - OVERWRITEPROTOCOL=https
+      - CERT_NAME=${CERT_NAME}
+      - MYSQL_HOST=db
+      - REDIS_HOST=redis
+    env_file:
+      - db.env
+    depends_on:
+      - db
+      - redis
+    networks:
+      - proxy-tier
+      - default
+
+  cron:
+    build: ./nextcloud
+    restart: always
+    volumes:
+      - ${DATA_DIR}:/var/www/html
+      - ./nextcloud/crontabs:/var/spool/cron/crontabs
+    entrypoint: /cron.sh
+    depends_on:
+      - db
+      - redis
+      
+  mydns_letsencrypt:
+    build: ./mydns_letsencrypt
+    restart: always
+    tty: true
+    volumes:
+      - ./mydns_letsencrypt/crontabs:/var/spool/cron/crontabs
+      - ./mydns_letsencrypt/mydns:/mydns
+      - ./mydns_letsencrypt/letsencrypt:/letsencrypt
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/lib/letsencrypt:/var/lib/letsencrypt
+      - certs:/etc/nginx/certs
+    environment:
+      - TZ=Asia/Tokyo
+      - DOMAIN=${DOMAIN}
+      - CERT_NAME=${CERT_NAME}
+
+volumes:
+  db:
+  nextcloud:
+  vhost.d:
+  html:
+  certs:
+
+networks:
+  proxy-tier:

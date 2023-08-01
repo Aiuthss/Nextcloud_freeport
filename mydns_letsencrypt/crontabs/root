@@ -1,0 +1,2 @@
+0 0 * * 0 bash /letsencrypt/letsencrypt-renew.sh
+0 0 * * * bash /mydns/mydns-notify.sh
