@@ -26,4 +26,6 @@ Replace \<xxx\> in
 ```
 sudo docker-compose up -d
 ```
-5. Access https://<your domain>:<HTTPS port>
+5. Access https://\<your domain\>:\<HTTPS port\>
+
+DNS notification and certificate refresh is conducted automatically.
