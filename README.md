@@ -7,6 +7,7 @@ This repository supports only docker for Linux.
 This repository uses MyDNS and Let's Encrypt.
 1. Sign up MyDNS and get your domain.
 2. Get a certificate for your domain from Let's Encrypt by this code. (Replace \<xxx\>)
+If you haven't installed certbot, install it from apt or snap.
 ```
 certbot certonly --manual --keep\
         --preferred-challenges=dns \
