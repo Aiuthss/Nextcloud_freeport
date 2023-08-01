@@ -6,7 +6,8 @@ This repository supports only docker for Linux.
 ## Usage
 This repository uses MyDNS and Let's Encrypt.
 1. Sign up MyDNS and get your domain.
-2. Modify setting files. You need write your mail address, domain, MyDNS ID, MyDNS password, data directory, and HTTP/HTTPS ports you want to open.
+2. Clone this repository.
+3. Modify setting files. You need write your mail address, domain, MyDNS ID, MyDNS password, data directory, and HTTP/HTTPS ports you want to open.
 Replace \<xxx\> in
 ./.env
 ./mydns_letsencrypt/mydns/txtedit.conf
