@@ -7,13 +7,17 @@ This repository supports only docker for Linux.
 This repository uses MyDNS and Let's Encrypt.
 1. Sign up MyDNS and get your domain.
 2. Clone this repository.
-3. Modify setting files. You need write your mail address, domain, MyDNS ID, MyDNS password, data directory, and HTTP/HTTPS ports you want to open. <br>
+3. Change owner and group of cron setting file.
+```
+sudo chown root:root ./mydns_letsencrypt/crontabs/root
+```
+5. Modify setting files. You need write your mail address, domain, MyDNS ID, MyDNS password, data directory, and HTTP/HTTPS ports you want to open. <br>
 Replace \<xxx\> in <br>
 ./.env <br>
 ./mydns_letsencrypt/mydns/txtedit.conf <br>
 ./mydns_letsencrypt/mydns/mydns.env
 
-4. Get a certificate for your domain from Let's Encrypt by this code.
+6. Get a certificate for your domain from Let's Encrypt by this code.
 ```
 sudo bash ./mydns_letsencrypt/letsencrypt/letsencrypt-cert.sh
 ```
